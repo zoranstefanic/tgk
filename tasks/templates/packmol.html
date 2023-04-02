@@ -71,12 +71,6 @@ let mol = {{molecule|safe}};
 
 mol.coordinates = mol.atoms.map(a=> [a[0]*scaleFactor, a[1]*scaleFactor, a[2]]);
 
-function coordinates(mol) {
-    //Calculate the fractional coordinates
-    //return mol;
-    }
-
-
 function draw_molecule(mol) {
     //let a = mol.atoms;
     let a = mol.coordinates;
