@@ -1,5 +1,5 @@
 const scaleFactor = 30;
-const numCells = 5;
+const numCells = 8;
 const minCell = 10*scaleFactor;
 const maxCell = 15*scaleFactor;
 const minGamma = 91;

@@ -63,7 +63,9 @@ def packmol(request,chebi=None):
     molecules = pickle.load(open('/home/huk/apps/tgk/project/molecules.pkl','rb'))
     if not chebi:
         chebi = choice(list(molecules.keys()))
-    molecule = molecules[chebi]
+    molecule = molecules.get(chebi)
+    if not molecule:
+        molecule = choice(list(molecules.keys()))
     return render(request, 'packmol.html', { 
             'group': choice(plane_groups), 
             'plane_groups':plane_groups,

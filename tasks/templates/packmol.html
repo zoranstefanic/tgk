@@ -2,7 +2,7 @@
 
 {% load i18n %}
 
-{% block head_title %}Guess the group (practice){% endblock %}
+{% block head_title %}{{chebi_id}}{% endblock %}
 
 {% block extra_head %}
 <link rel="stylesheet" type="text/css" href="/static/css/style.css">
@@ -28,9 +28,8 @@
         <div id="right_answer" class="hidden">{{group}}</div>
         <div class="row">
             <div class="col-md-10">
-                <h1>Packmol</h1>
-                    <a href="{%url 'packmol'%}"><button class="btn btn-danger btn-lg">Reload</button></a>
-                    <button id="draw_sym_mates" class="btn btn-info btn-lg"><i class="fa fa-rotate-right"></i> draw symmetry</button>
+                <h1>Pack the molecule </h1>
+                    <a href="{%url 'packmol'%}"><button class="btn btn-danger btn-lg"><i class="fa fa-flask"></i> new</button></a>
                     <button id="decrease_a" class="btn btn-info btn-lg"><i class="fa fa-minus"></i><em>a</em></button>
                     <button id="increase_a" class="btn btn-info btn-lg"><i class="fa fa-plus"></i><em>a</em></button>
                     <button id="decrease_b" class="btn btn-info btn-lg"><i class="fa fa-minus"></i><em>b</em></button>
@@ -39,10 +38,9 @@
                     <button id="rotate-right" class="btn btn-info btn-lg"><i class="fa fa-rotate-right"></i> rotate right</button>
                 </p>
             </div>
-            <div class="col-md-4" style="margin-top:20px;">
+            <div class="col-md-2" style="margin-top:20px;">
                 <button id="what_answer" class="btn btn-info">What is the answer?</button>
-                <div id="click_result"></div>
-                <div id="answer"></div>
+                <div id="click_result"><b>{{group}}</b></div>
             </div>
         </div>
         <div class="row">
@@ -75,6 +73,7 @@ let mol = {{molecule|safe}};
 
 mol.coords = mol.atoms.map(a=> [a[0]*scaleFactor, a[1]*scaleFactor, a[2]]);
 mol.com = center_of_mass(mol); //calculate the center of mass of initial molecule
+let com_init = center_of_mass(mol); //calculate the center of mass of initial molecule
 
 
 //https://codereview.stackexchange.com/questions/142214/using-d3-drag-to-enable-dragging-on-an-svg-group
@@ -108,7 +107,7 @@ function draw_molecule(mol) {
     .attr('class', a => 'atom' + a[2] +' mol')
     .attr("r", 22)
     .attr("stroke",'black')
-    .attr("stroke-width",'1')
+    .attr("stroke-width",'3')
     return mol;
     }
 
@@ -143,9 +142,7 @@ function move_here() {
     d3.select('.svg').on('click', function() {
         if (d3.event.defaultPrevented) return; // Dragged
         let p = [d3.mouse(this)[0], d3.mouse(this)[1]]; // Mouse click point
-        console.log(p);
-        let t = [p[0] - mol.com[0],p[1] - mol.com[1]]; // Translation to apply
-        //let t = [p[0],p[1]]; // Translation to apply
+        let t = [p[0] - mol.com[0] + com_init[0] ,p[1] - mol.com[1] + com_init[1] ]; // Translation to apply
         //d3.select(this).raise().attr("stroke", "black");
         d3.selectAll('.mol')
         .transition()
@@ -153,7 +150,6 @@ function move_here() {
         .style('transform','translate(' + p[0]+'px,' + p[1] +'px)');
        mol.coords = mol.coords.map(pt => [pt[0] + t[0], pt[1] + t[1], pt[2]]);
        mol.com = center_of_mass(mol); // Update the center of mass upon translation
-       console.log('COM',mol.com);
        generate_symmetry_mates(mol,plane_group);
        draw_sym_mates();
     });
@@ -197,11 +193,9 @@ $(document).ready(function() {
             return false; //This does not reload the page
        });
 });
-</script>
-<script>
 function what_is_the_answer(event) {
                 var right_answer = $('#right_answer').text();
-                $('#click_result').html("<h2 style='color:green'>"+right_answer+"</h2>");
+                $('#click_result').html("<h2 style='color:green'>"+plane_group+"</h2>");
                 };
 $("#what_answer").click(what_is_the_answer);
 $("#increase_a").click(increase_a);
