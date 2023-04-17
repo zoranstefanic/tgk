@@ -100,7 +100,7 @@ function center_of_mass(mol) {
 
 function draw_molecule(mol) {
     let a = mol.coords;
-    d3.select('.svg').append('g').selectAll('.mol').data(a)
+    d3.select('.svg').selectAll('.mol').data(a)
     .join("circle")
     .attr("cx", a => a[0])
     .attr("cy", a => a[1])
@@ -143,15 +143,15 @@ function move_here() {
         if (d3.event.defaultPrevented) return; // Dragged
         let p = [d3.mouse(this)[0], d3.mouse(this)[1]]; // Mouse click point
         let t = [p[0] - mol.com[0] + com_init[0] ,p[1] - mol.com[1] + com_init[1] ]; // Translation to apply
-        //d3.select(this).raise().attr("stroke", "black");
+        d3.selectAll('.mol').raise();
         d3.selectAll('.mol')
         .transition()
         .duration(500)
         .style('transform','translate(' + p[0]+'px,' + p[1] +'px)');
-       mol.coords = mol.coords.map(pt => [pt[0] + t[0], pt[1] + t[1], pt[2]]);
-       mol.com = center_of_mass(mol); // Update the center of mass upon translation
-       generate_symmetry_mates(mol,plane_group);
-       draw_sym_mates();
+        mol.coords = mol.coords.map(pt => [pt[0] + t[0], pt[1] + t[1], pt[2]]);
+        mol.com = center_of_mass(mol); // Update the center of mass upon translation
+        generate_symmetry_mates(mol,plane_group);
+        draw_sym_mates();
     });
     }
 
