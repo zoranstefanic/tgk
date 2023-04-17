@@ -16,6 +16,7 @@
 .atomN { fill: #5c98f9; }
 .atomO { fill: #fb54ef; }
 .atomS { fill: yellow; }
+.atomR, .atomP { fill: lime; }
 .atomCL { fill: green; }
 .sym { opacity: 0.8; }
 </style>
@@ -26,11 +27,14 @@
     <div class="container">
         <div id="right_answer" class="hidden">{{group}}</div>
         <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-10">
                 <h1>Packmol</h1>
                     <a href="{%url 'packmol'%}"><button class="btn btn-danger btn-lg">Reload</button></a>
                     <button id="draw_sym_mates" class="btn btn-info btn-lg"><i class="fa fa-rotate-right"></i> draw symmetry</button>
-                    <button id="new_molecule" class="btn btn-info btn-lg"><i class="fa fa-plus"></i> New molecule</button>
+                    <button id="decrease_a" class="btn btn-info btn-lg"><i class="fa fa-minus"></i><em>a</em></button>
+                    <button id="increase_a" class="btn btn-info btn-lg"><i class="fa fa-plus"></i><em>a</em></button>
+                    <button id="decrease_b" class="btn btn-info btn-lg"><i class="fa fa-minus"></i><em>b</em></button>
+                    <button id="increase_b" class="btn btn-info btn-lg"><i class="fa fa-plus"></i><em>b</em></button>
                     <button id="rotate-left" class="btn btn-info btn-lg"><i class="fa fa-rotate-left"></i> rotate left</button>
                     <button id="rotate-right" class="btn btn-info btn-lg"><i class="fa fa-rotate-right"></i> rotate right</button>
                 </p>
@@ -58,18 +62,35 @@
 </div>
 
 <script>
-const plane_group = "{{group}}";
-const cell = getCell(plane_group);
+var plane_group = "{{group}}";
+var cell = getCell(plane_group);
 var a = cell[0], b = cell[1], gamma = cell[2];
-const gammar = (gamma/180)*Math.PI;
-                                        console.log(plane_group);
-                                        console.log([a,b,gamma]);
+var gammar = (gamma/180)*Math.PI;
+//console.log(plane_group);
+//console.log([a,b,gamma]);
 
-var svg = d3.select('svg');
+var svg = d3.select('.svg');
 let mol = {{molecule|safe}};
                                         console.log(mol);
 
 mol.coords = mol.atoms.map(a=> [a[0]*scaleFactor, a[1]*scaleFactor, a[2]]);
+mol.com = center_of_mass(mol); //calculate the center of mass of initial molecule
+
+
+//https://codereview.stackexchange.com/questions/142214/using-d3-drag-to-enable-dragging-on-an-svg-group
+
+function change_pg(pg) {
+    plane_group = pg;
+    cell = getCell(plane_group);
+    a = cell[0], b = cell[1], gamma = cell[2];
+    gammar = (gamma/180)*Math.PI;
+    draw_cell();
+}
+
+function increase_a() { a += 20; generate_symmetry_mates(mol,plane_group); draw_sym_mates(); draw_cell(); }
+function decrease_a() { a -= 20; generate_symmetry_mates(mol,plane_group); draw_sym_mates(); draw_cell(); }
+function increase_b() { b += 20; generate_symmetry_mates(mol,plane_group); draw_sym_mates(); draw_cell(); }
+function decrease_b() { b -= 20; generate_symmetry_mates(mol,plane_group); draw_sym_mates(); draw_cell(); }
 
 function center_of_mass(mol) {
     let arr = mol.coords;
@@ -78,10 +99,9 @@ function center_of_mass(mol) {
     return [cx/arr.length,cy/arr.length];
 }
 
-
 function draw_molecule(mol) {
     let a = mol.coords;
-    d3.select('svg').selectAll('.mol').data(a)
+    d3.select('.svg').append('g').selectAll('.mol').data(a)
     .join("circle")
     .attr("cx", a => a[0])
     .attr("cy", a => a[1])
@@ -94,7 +114,7 @@ function draw_molecule(mol) {
 
 function draw_sym_mates() {
     let a = mol.sym_positions;
-    d3.select('svg').selectAll('.sym').data(mol.sym_positions)
+    d3.select('.svg').selectAll('.sym').data(mol.sym_positions)
     .join("circle")
     .attr("cx", function(a) { return  a[0]; })
     .attr("cy", function(a) { return  a[1]; })
@@ -120,20 +140,20 @@ function generate_symmetry_mates(mol,plane_group) {
 
 function move_here() {
     // Moves the molecule at 
-    d3.select('svg').on('click', function() {
+    d3.select('.svg').on('click', function() {
         if (d3.event.defaultPrevented) return; // Dragged
-        let com = center_of_mass(mol);
-        let p = [d3.mouse(this)[0]-com[0], d3.mouse(this)[1]-com[1]];
-        console.log('Click point:', p);
-        console.log(toFractional(p,plane_group));
+        let p = [d3.mouse(this)[0], d3.mouse(this)[1]]; // Mouse click point
+        console.log(p);
+        let t = [p[0] - mol.com[0],p[1] - mol.com[1]]; // Translation to apply
+        //let t = [p[0],p[1]]; // Translation to apply
+        //d3.select(this).raise().attr("stroke", "black");
         d3.selectAll('.mol')
         .transition()
-        //.ease(d3.easeBack)
-        .duration(1000)
-        .style('transform','translate(' +p[0]+'px,' + p[1] +'px)')
-        ;
-        //Update mol.atoms to be centered at new position of the mouse
-       mol.coords = mol.coords.map(pt => [pt[0] + p[0], pt[1] + p[1], pt[2]]);
+        .duration(500)
+        .style('transform','translate(' + p[0]+'px,' + p[1] +'px)');
+       mol.coords = mol.coords.map(pt => [pt[0] + t[0], pt[1] + t[1], pt[2]]);
+       mol.com = center_of_mass(mol); // Update the center of mass upon translation
+       console.log('COM',mol.com);
        generate_symmetry_mates(mol,plane_group);
        draw_sym_mates();
     });
@@ -143,14 +163,22 @@ draw_cell();
 draw_molecule(mol);
 //let mol1 = generate_symmetry_mates(mol,plane_group);
 move_here();
+/*
+var dragmol = d3.drag()
+  .on("drag", function(d, i) {
+    d3.select(this).attr("transform", "translate(" + (d.x = d3.event.x) + "," + (d.y = d3.event.y) + ")");
+  });
+d3.select("g").selectAll('circle').call(dragmol);
+*/
 </script>
 
 <script>
 $(document).ready(function() {
        $(".click_answer").click(function(event){
             var answer = $(this).attr('id');
+            change_pg(answer);
             var right_answer = $('#right_answer').text();
-            $.ajax({
+            /*$.ajax({
                  type:"POST",
                  url:"/task1/",
                  data: {
@@ -165,8 +193,8 @@ $(document).ready(function() {
                      };
                      $('#answer').html("<h2>That's "+right_or_wrong+"!</h2>") 
                  }  
-            });
-            return false; //<---- move it here
+            });*/
+            return false; //This does not reload the page
        });
 });
 </script>
@@ -176,7 +204,10 @@ function what_is_the_answer(event) {
                 $('#click_result').html("<h2 style='color:green'>"+right_answer+"</h2>");
                 };
 $("#what_answer").click(what_is_the_answer);
-$("#new_molecule").click(draw_molecule);
+$("#increase_a").click(increase_a);
+$("#decrease_a").click(decrease_a);
+$("#increase_b").click(increase_b);
+$("#decrease_b").click(decrease_b);
 $("#draw_sym_mates").click(()=> draw_sym_mates());
 </script>
 

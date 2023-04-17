@@ -19,30 +19,35 @@ function toPixel(xfrac,yfrac) {
 function draw_cell() { 
     let coords = [[1,1],[2,1],[1,2]].map((aa) => toPixel(aa[0],aa[1]));
     console.log("cell",coords);
+    d3.selectAll('.cell').remove();
     svg.append('line')
             .style("stroke", "blue")
             .style("stroke-width", 2)
             .attr("x1", coords[0][0])
             .attr("y1", coords[0][1])
             .attr("x2", coords[1][0])
-            .attr("y2", coords[1][1]);
+            .attr("y2", coords[1][1])
+            .attr('class', 'cell');
     svg.append('line')
             .style("stroke", "red")
             .style("stroke-width", 2)
             .attr("x1", coords[0][0])
             .attr("y1", coords[0][1])
             .attr("x2", coords[2][0])
-            .attr("y2", coords[2][1]);
+            .attr("y2", coords[2][1])
+            .attr('class', 'cell');
     svg.append('circle')
             .attr('class','endpoint')
             .attr('cx',coords[1][0])
             .attr('cy',coords[1][1])
-            .attr('r',5);
+            .attr('r',5)
+            .attr('class', 'cell');
     svg.append('circle')
             .attr('class','endpoint')
             .attr('cx',coords[2][0])
             .attr('cy',coords[2][1])
-            .attr('r',5);
+            .attr('r',5)
+            .attr('class', 'cell');
     }
 
 function generateCells1(p){
@@ -121,12 +126,13 @@ var drag = d3.drag()
 
 function dragstart(d) {
     d3.select(this).classed("dragged", true);
+    d3.select(this).raise().attr("stroke", "black");
     }
 
 function dragged(d) {
     d3.select(this).attr("cx",d3.event.x).attr("cy", d3.event.y);
     var group = d3.select(this.parentNode).selectAll('circle');
-
+    console.log(group);
     var p = [d3.mouse(this)[0], d3.mouse(this)[1]];
     var x = toFractional(p)[0], y = toFractional(p)[1];
     var new_positions = draw_symmetry([x,y], plane_group);
