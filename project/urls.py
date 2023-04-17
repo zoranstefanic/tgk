@@ -31,6 +31,7 @@ urlpatterns = [
     path("task1play/", task1play, name="task1play"),
     path("task1complete/", task1complete, name="task1complete"),
     path("task1replay/", task1replay, name="task1replay"),
+    path("packmol/<str:chebi>/", packmol, name="packmolchebi"),
     path("packmol/", packmol, name="packmol"),
     path("scoreboard/", scoreboard, name="scoreboard"),
 ]
