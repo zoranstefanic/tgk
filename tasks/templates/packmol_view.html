@@ -52,11 +52,9 @@
 
 <script>
 var plane_group = "{{group}}";
-//var cell = getCell(plane_group);
 var cell = {{cell}};
 var a = cell[0], b = cell[1], gamma = cell[2];
 var gammar = (gamma/180)*Math.PI;
-
 var svg = d3.select('.svg');
 let mol = {{molecule|safe}};
 
@@ -65,7 +63,7 @@ function center_of_mass(mol) {
     let cx = 0, cy=0;
     for (let i = 0; i< arr.length; i++) { cx = cx + arr[i][0]; cy = cy + arr[i][1]; };
     return [cx/arr.length,cy/arr.length];
-}
+    }
 
 function draw_molecule(mol) {
     let a = mol.coords;

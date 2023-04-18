@@ -60,18 +60,36 @@ def task1_view(request):
 
 @login_required
 def packmol(request,chebi=None):
-    molecules = pickle.load(open('/home/huk/apps/tgk/project/molecules.pkl','rb'))
-    if not chebi:
-        chebi = choice(list(molecules.keys()))
-    molecule = molecules.get(chebi)
-    if not molecule:
-        molecule = choice(list(molecules.keys()))
-    return render(request, 'packmol.html', { 
-            'group': choice(plane_groups), 
-            'plane_groups':plane_groups,
-            'molecule': molecule,
-            'chebi_id': chebi,
-            })
+    if request.method == "POST":
+        if request.is_ajax():
+            mol = request.POST.get('mol')
+            cell = request.POST.get('cell')
+            chebi_id = request.POST.get('chebi_id')
+            group = request.POST.get('group')
+            f = open('/home/huk/apps/tgk/project/File','a')
+            f.write(mol_to_str(mol)+'\n'+cell+'\n'+chebi_id+'\n'+group+'\n')
+            f.close()
+        return redirect('packmol')
+    else:
+        molecules = pickle.load(open('/home/huk/apps/tgk/project/molecules.pkl','rb'))
+        if not chebi:
+            chebi = choice(list(molecules.keys()))
+        molecule = molecules.get(chebi)
+        if not molecule:
+            molecule = choice(list(molecules.keys()))
+        return render(request, 'packmol.html', { 
+                'group': choice(plane_groups), 
+                'plane_groups':plane_groups,
+                'molecule': molecule,
+                'chebi_id': chebi,
+                })
+
+def mol_to_str(s):
+    s = s.split(',')
+    d = {'atoms':[]}
+    for i in range(int(len(s)/3)):
+        d['atoms'] += [[round(float(s[3*i]),3), round(float(s[3*i+1]),3), s[3*i+2]]]
+    return str(d)
 
 @login_required
 def packmol_view(request):
@@ -85,9 +103,10 @@ def packmol_view(request):
        [1.299, 3.75, 'C']],
        }"""
     chebi = "CHEBI:50947"
-    cell = "[104, 200, 110]"
+    cell = "[200, 200, 120]"
+    group = 'p3'
     return render(request, 'packmol_view.html', { 
-            'group': 'p1', 
+            'group': group, 
             'plane_groups':plane_groups,
             'molecule': molecule,
             'cell': cell,

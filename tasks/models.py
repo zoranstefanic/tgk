@@ -22,8 +22,8 @@ class PackmolPlay(models.Model):
     chebi   = models.CharField(max_length=30)
     cell    = models.CharField(max_length=30)
     mol     = models.TextField()
-    score   = models.FloatField()
+    score   = models.FloatField(null=True)
 
     def __unicode__(self):
-        return "%s" %(self.user)
+        return "%s - %s" %(self.user,self.chebi)
 
