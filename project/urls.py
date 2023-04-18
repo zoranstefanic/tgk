@@ -33,6 +33,7 @@ urlpatterns = [
     path("task1replay/", task1replay, name="task1replay"),
     path("packmol/<str:chebi>/", packmol, name="packmolchebi"),
     path("packmol/", packmol, name="packmol"),
+    path("packmol_view/", packmol_view, name="packmol_view"),
     path("scoreboard/", scoreboard, name="scoreboard"),
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

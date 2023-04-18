@@ -74,6 +74,27 @@ def packmol(request,chebi=None):
             })
 
 @login_required
+def packmol_view(request):
+    molecule = """{'atoms': [[0.0, 0.0, 'R'],
+       [1.299, 0.75, 'C'],
+       [2.5981, -0.0, 'C'],
+       [3.8971, 0.75, 'C'],
+       [5.1962, -0.0, 'O'],
+       [3.8971, 2.25, 'O'],
+       [1.299, 2.25, 'N'],
+       [1.299, 3.75, 'C']],
+       }"""
+    chebi = "CHEBI:50947"
+    cell = "[104, 200, 110]"
+    return render(request, 'packmol_view.html', { 
+            'group': 'p1', 
+            'plane_groups':plane_groups,
+            'molecule': molecule,
+            'cell': cell,
+            'chebi_id': chebi,
+            })
+
+@login_required
 def task1replay(request):
     Task1Play.objects.create(user=request.user)
     return redirect('task1play')

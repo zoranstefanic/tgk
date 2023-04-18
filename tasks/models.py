@@ -20,6 +20,7 @@ class Task1Play(models.Model):
 class PackmolPlay(models.Model):
     user    = models.ForeignKey(User,related_name="packmols", editable=False, on_delete=models.CASCADE)
     chebi   = models.CharField(max_length=30)
+    cell    = models.CharField(max_length=30)
     mol     = models.TextField()
     score   = models.FloatField()
 
