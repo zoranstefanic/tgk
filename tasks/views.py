@@ -66,9 +66,11 @@ def packmol(request,chebi=None):
             cell = request.POST.get('cell')
             chebi_id = request.POST.get('chebi_id')
             group = request.POST.get('group')
-            f = open('/home/huk/apps/tgk/project/File','a')
-            f.write(mol_to_str(mol)+'\n'+cell+'\n'+chebi_id+'\n'+group+'\n')
-            f.close()
+            mol = mol_to_str(mol) # Change to format required by javascript in packmol.html
+            play = PackmolPlay.objects.create(mol=mol,cell=cell,chebi=chebi_id,user=request.user,score=1.00,group=group)
+            #f = open('/home/huk/apps/tgk/project/File','a')
+            #f.write(mol_to_str(mol)+'\n'+cell+'\n'+chebi_id+'\n'+group+'\n')
+            #f.close()
         return redirect('packmol')
     else:
         molecules = pickle.load(open('/home/huk/apps/tgk/project/molecules.pkl','rb'))
@@ -92,25 +94,14 @@ def mol_to_str(s):
     return str(d)
 
 @login_required
-def packmol_view(request):
-    molecule = """{'atoms': [[0.0, 0.0, 'R'],
-       [1.299, 0.75, 'C'],
-       [2.5981, -0.0, 'C'],
-       [3.8971, 0.75, 'C'],
-       [5.1962, -0.0, 'O'],
-       [3.8971, 2.25, 'O'],
-       [1.299, 2.25, 'N'],
-       [1.299, 3.75, 'C']],
-       }"""
-    chebi = "CHEBI:50947"
-    cell = "[200, 200, 120]"
-    group = 'p3'
+def packmol_view(request,id):
+    pp = PackmolPlay.objects.get(id=id)
     return render(request, 'packmol_view.html', { 
-            'group': group, 
+            'group': pp.group, 
             'plane_groups':plane_groups,
-            'molecule': molecule,
-            'cell': cell,
-            'chebi_id': chebi,
+            'molecule': pp.molecule,
+            'cell': pp.cell,
+            'chebi_id': pp.chebi,
             })
 
 @login_required
@@ -122,3 +113,8 @@ def task1replay(request):
 def scoreboard(request):
     all_tasks = Task1Play.objects.filter(finished=True) 
     return render(request, 'scoreboard.html', { 'tasks':all_tasks})
+
+@login_required
+def packmol_scoreboard(request):
+    packmols = PackmolPlay.objects.order_by('score')
+    return render(request, 'packmol_scoreboard.html', { 'packmols':packmols})

@@ -21,9 +21,13 @@ class PackmolPlay(models.Model):
     user    = models.ForeignKey(User,related_name="packmols", editable=False, on_delete=models.CASCADE)
     chebi   = models.CharField(max_length=30)
     cell    = models.CharField(max_length=30)
+    group   = models.CharField(max_length=10)
     mol     = models.TextField()
     score   = models.FloatField(null=True)
 
     def __unicode__(self):
+        return "%s - %s" %(self.user,self.chebi)
+
+    def __str__(self):
         return "%s - %s" %(self.user,self.chebi)
 
