@@ -157,7 +157,6 @@ function move_here() {
 
 draw_cell();
 draw_molecule(mol);
-//let mol1 = generate_symmetry_mates(mol,plane_group);
 move_here();
 /*
 var dragmol = d3.drag()
@@ -174,12 +173,14 @@ $(document).ready(function() {
             var answer = $(this).attr('id');
             change_pg(answer);
             var right_answer = $('#right_answer').text();
-            /*$.ajax({
+            return false; //This does not reload the page
+       });
+       $("#submit").click(function(event){
+            $.ajax({
                  type:"POST",
-                 url:"/task1/",
+                 url:"/packmol/",
                  data: {
-                        'pg': answer,
-                        'right_answer': right_answer, 
+                        'mol': mol,
                         },
                  success: function(){
                      if (answer == right_answer){
@@ -189,7 +190,7 @@ $(document).ready(function() {
                      };
                      $('#answer').html("<h2>That's "+right_or_wrong+"!</h2>") 
                  }  
-            });*/
+            });
             return false; //This does not reload the page
        });
 });

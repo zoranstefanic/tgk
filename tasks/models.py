@@ -3,7 +3,6 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class Task1Play(models.Model):
-    
     user    = models.ForeignKey(User,related_name="plays", editable=False, on_delete=models.CASCADE)
     start   = models.DateTimeField(auto_now_add=True,editable = False)
     right   = models.PositiveIntegerField(verbose_name="Number of right answers",default=0)
@@ -12,19 +11,18 @@ class Task1Play(models.Model):
     finished = models.BooleanField(default=False)
     duration = models.DurationField(null=True)
 
-    """
-    def duration(self):
-        "The duration of the experiment"
-        delta = self.end - self.start
-        days = delta.days
-        hours = delta.seconds//3600
-        minutes = (delta.seconds/3600.0 - hours)*60
-        seconds = (minutes - int(minutes))*60
-        return "%d days  %02d h : %02d min : %02d,%02d sec" %(days,hours,int(minutes),int(seconds), delta.microseconds//10000)
-    """
     def __unicode__(self):
         return "%s" %(self.user)
     
     class Meta:
         ordering = ['duration','-wrong']
+
+class PackmolPlay(models.Model):
+    user    = models.ForeignKey(User,related_name="packmols", editable=False, on_delete=models.CASCADE)
+    chebi   = models.CharField(max_length=30)
+    mol     = models.TextField()
+    score   = models.FloatField()
+
+    def __unicode__(self):
+        return "%s" %(self.user)
 
