@@ -99,7 +99,7 @@ def packmol_view(request,id):
     return render(request, 'packmol_view.html', { 
             'group': pp.group, 
             'plane_groups':plane_groups,
-            'molecule': pp.molecule,
+            'molecule': pp.mol,
             'cell': pp.cell,
             'chebi_id': pp.chebi,
             })

@@ -5,8 +5,9 @@
     <li> <a class="navbar-item" href="{% url 'names' %}"><i class="fa fa-list"> Names</i></a> </li>
     {% if request.user.is_authenticated %}
         <li> <a href="{% url 'task1' %}"><button class="btn btn-success">Symmetry</button></a> </li>
-        <li> <a href="{% url 'packmol' %}"><button class="btn btn-info">Packmol</button></a> </li>
         <li> <a class="navbar-item" href="{% url 'scoreboard' %}"><i class="fa fa-trophy"> Scoreboard</i></a> </li>
+        <li> <a href="{% url 'packmol' %}"><button class="btn btn-info">Packmol</button></a> </li>
+        <li> <a class="navbar-item" href="{% url 'packmol_scoreboard' %}"><i class="fa fa-trophy"> Packmol scoreboard</i></a> </li>
         <p class="navbar-text">
             <i class="fa fa-user"></i> {% user_display request.user %}
         </p>

@@ -28,19 +28,10 @@
         <div id="right_answer" class="hidden">{{group}}</div>
         <div class="row">
             <div class="col-md-10">
-                <h1>Pack the molecule </h1>
-                    <a href="{%url 'packmol'%}"><button class="btn btn-danger btn-lg"><i class="fa fa-flask"></i> new</button></a>
-                    <button id="decrease_a" class="btn btn-info btn-lg"><i class="fa fa-minus"></i><em>a</em></button>
-                    <button id="increase_a" class="btn btn-info btn-lg"><i class="fa fa-plus"></i><em>a</em></button>
-                    <button id="decrease_b" class="btn btn-info btn-lg"><i class="fa fa-minus"></i><em>b</em></button>
-                    <button id="increase_b" class="btn btn-info btn-lg"><i class="fa fa-plus"></i><em>b</em></button>
-                    <button id="rotate-left" class="btn btn-info btn-lg"><i class="fa fa-rotate-left"></i> rotate left</button>
-                    <button id="rotate-right" class="btn btn-info btn-lg"><i class="fa fa-rotate-right"></i> rotate right</button>
-                </p>
+                <h1>{{mol.cell}}</h1>
+                <h1>{{mol.group}}</h1>
             </div>
             <div class="col-md-2" style="margin-top:20px;">
-                <button id="what_answer" class="btn btn-info">What is the answer?</button>
-                <div id="click_result"><b>{{group}}</b></div>
             </div>
         </div>
         <div class="row">
@@ -104,7 +95,9 @@ function generate_symmetry_mates(mol,plane_group) {
     return mol;
     }
 
-mol.coords = mol.atoms.map(a=> [a[0]*scaleFactor, a[1]*scaleFactor, a[2]]);
+// Promijeniti ovo ovdje, treba se sejvati mol.coords
+//mol.coords = mol.atoms.map(a=> [a[0]*scaleFactor, a[1]*scaleFactor, a[2]]);
+mol.coords = mol.atoms;
 mol.com = center_of_mass(mol); //calculate the center of mass of initial molecule
 let com_init = center_of_mass(mol); //calculate the center of mass of initial molecule
 
