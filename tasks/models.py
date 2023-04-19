@@ -29,5 +29,5 @@ class PackmolPlay(models.Model):
         return "%s - %s" %(self.user,self.chebi)
 
     def __str__(self):
-        return "%s - %s" %(self.user,self.chebi)
+        return "%s %s %s" %(self.user,self.chebi, self.group)
 

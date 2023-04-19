@@ -28,7 +28,8 @@
                     <tr>
                         <th></th>
                         <th><i class="fa fa-user fa-2x"></i> User</th>
-                        <th><i class="fa fa-square fa-2x"></i> Packing</th>
+                        <th>Packing</th>
+                        <th>Try again</th>
                         <th><i class="fa fa-bolt fa-2x"></i> Score</th>
                         <th></th>
                     </tr>
@@ -39,6 +40,7 @@
                         <td>{{forloop.counter}}</td>
                         <td>{{pm.user.get_full_name}}</td>
                         <td><a href="{% url 'packmol_view' pm.id%}">{{pm}}</a></td>
+                        <td><a href="/packmol/{{pm.chebi}}"><button class="btn btn-info">Retry</button></a></td>
                         <td>{{pm.score}}</td>
                         <td></td>
                     </tr>

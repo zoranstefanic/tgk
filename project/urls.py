@@ -36,5 +36,6 @@ urlpatterns = [
     path("packmol_view/<int:id>/", packmol_view, name="packmol_view"),
     path("packmol_scoreboard/", packmol_scoreboard, name="packmol_scoreboard"),
     path("scoreboard/", scoreboard, name="scoreboard"),
+    path("scoreboard_htcc5/", scoreboard_htcc5, name="scoreboard_htcc5"),
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

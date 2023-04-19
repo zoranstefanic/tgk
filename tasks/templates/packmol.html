@@ -174,7 +174,8 @@ $(document).ready(function() {
                  url:"/packmol/",
                  data: {
                         'mol': mol.coords.toString(),
-                        'cell': '[' + cell.toString() +']',
+                        //'cell': '[' + cell.toString() +']',
+                        'cell': '['+ a +','+b+','+gamma+']',
                         'chebi_id': chebi_id,
                         'group': plane_group,
                         },
